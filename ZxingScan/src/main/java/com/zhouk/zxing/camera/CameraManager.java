@@ -320,38 +320,10 @@ public final class CameraManager {
      * @return A PlanarYUVLuminanceSource instance.
      */
     public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height,double zoomWith, double zoomheight) {
-        //设置裁剪策略
+        //设置裁剪
         int l, r, t, b;
-        int halfHeight = height / 2;
-//        if ((halfHeight - 400) > 0) {
-//            l = width / 2 - 400;
-//            r = 800;
-//            t = halfHeight - 400;
-//            b = 800;
-//        } else if ((halfHeight - 300) > 0) {
-//            l = width / 2 - 300;
-//            r = 600;
-//            t = halfHeight - 300;
-//            b = 600;
-//        } else if ((halfHeight - 200) > 0) {
-//            l = width / 2 - 200;
-//            r = 400;
-//            t = halfHeight - 200;
-//            b = 400;
-//        } else if ((halfHeight - 100) > 0) {
-//            l = width / 2 - 100;
-//            r = 200;
-//            t = halfHeight - 100;
-//            b = 200;
-//        } else {
-//            l = 0;
-//            r = width;
-//            t = 0;
-//            b = height;
-//        }
         int pw = (int) (width / zoomheight);
         int ph = (int) (height / zoomWith);
-
 
         l = width / 2 - pw / 2;
         r = pw;

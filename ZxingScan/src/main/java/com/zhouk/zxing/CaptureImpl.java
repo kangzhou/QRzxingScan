@@ -25,6 +25,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.zhouk.zxing.callback.ResultCallBack;
 import com.zhouk.zxing.callback.ZxingCallBack;
@@ -45,7 +46,10 @@ public class CaptureImpl implements ResultCallBack {
     private SurfaceHolder.Callback shCallback;
     private boolean hasSurface;
     private SurfaceHolder surfaceHolder;
+    private SurfaceView surfaceView;
     private ResultCallBack resultCallBack;
+    private double cropWight = -1;
+    private double cropHeight = -1;
 
     public CaptureImpl(ZxingCallBack callBack) {
         this.callBack = callBack;
@@ -65,9 +69,11 @@ public class CaptureImpl implements ResultCallBack {
         beepManager.updatePrefs();
         ambientLightManager.start(cameraManager);
 
-        SurfaceView surfaceView = callBack.getSurfaceView();
+        surfaceView = callBack.getSurfaceView();
+        if (surfaceView == null) {
+            throw new IllegalStateException("surfaceView is null!");
+        }
         surfaceHolder = surfaceView.getHolder();
-        getSurfaceWith();
         shCallback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -129,12 +135,18 @@ public class CaptureImpl implements ResultCallBack {
 
     @Override
     public double getScanWith() {
-        return (double)widthPixels/(double)callBack.getScopImage().getWidth();
+        if(cropWight==-1){
+            getSurfaceWith();
+        }
+        return cropWight;
     }
 
     @Override
     public double getScanHeight() {
-        return (double)heightPixels/(double)callBack.getScopImage().getHeight();
+        if(cropHeight==-1){
+            getSurfaceWith();
+        }
+        return cropHeight;
     }
 
     @Override
@@ -163,9 +175,10 @@ public class CaptureImpl implements ResultCallBack {
                 handler = new CaptureImplHandler(resultCallBack,  cameraManager);
             }
         } catch (IOException ioe) {
-            Log.w(TAG, ioe);
+            Log.e(TAG, "Do you apply for camera permission?");
         } catch (RuntimeException e) {
-            Log.w(TAG, "Unexpected error initializing camera", e);
+//            throw new RuntimeException("Do you apply for camera permission?");
+            Log.e(TAG, "Do you apply for camera permission?");
         }
     }
 
@@ -195,13 +208,19 @@ public class CaptureImpl implements ResultCallBack {
         cameraManager.setTorch(isLight);
     }
 
-    int widthPixels ;
-    int heightPixels;
     private void getSurfaceWith(){
+        View cropImage = callBack.getScopImage();
+        if (cropImage == null) {
+            throw new IllegalStateException("ScopImage is null!");
+        }
         DisplayMetrics outMetrics = new DisplayMetrics();
         callBack.getContext().getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
-        widthPixels = outMetrics.widthPixels;
-        heightPixels = outMetrics.heightPixels;
+        float density = outMetrics.density;
+        int widthPixels = (int) (outMetrics.widthPixels / density);  // 屏幕宽度(dp)
+        int heightPixels = (int) (outMetrics.heightPixels / density);// 屏幕高度(dp)
+
+        cropWight = (double)widthPixels/(double)px2dip(cropImage.getWidth());
+        cropHeight = (double)heightPixels/(double)px2dip(cropImage.getHeight());
     }
 
     LifeListener mLifeListener = new LifeListener() {
@@ -243,5 +262,14 @@ public class CaptureImpl implements ResultCallBack {
             manager.beginTransaction().add(fragment, TAG).commitAllowingStateLoss();
         }
         return fragment;
+    }
+
+    private int px2dip(float pxValue) {
+        final float scale = callBack.getContext().getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    public CaptureImpl setSurfaceView(SurfaceView preview_view) {
+        return this;
     }
 }

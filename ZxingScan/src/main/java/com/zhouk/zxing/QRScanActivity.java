@@ -18,9 +18,10 @@ public class QRScanActivity extends Activity implements ZxingCallBack {
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscan);
+
         preview_view = findViewById(R.id.preview_view);
         scopIm = findViewById(R.id.scanBox);
-        new CaptureImpl(this);
+        new CaptureImpl(this).setSurfaceView(preview_view);
     }
 
     @Override
