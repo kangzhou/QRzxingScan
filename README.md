@@ -1,15 +1,5 @@
-# 最终效果
-为放大效果，特意找来一部低性能的测试机
-### 优化之前
-统计多次扫描结果，单帧识别成功的时间为2-5S
-
-![1](https://github.com/kangzhou/QRzxingScan/blob/master/pic/zxingscan11.png)
-
-### 优化之后
-![2](https://github.com/kangzhou/QRzxingScan/blob/master/pic/zxingscan22.png)
-
-基本维持在50ms左右
-
+# 详细介绍
+[博客](https://www.jianshu.com/p/d10e147a2709)
 # How to
 ### Step 1
 ```java 
@@ -41,14 +31,6 @@ public void goScan(View view){
         }
     }
 ```
-
-# 原理
-	1. 减少解码格式提高解码速度，二维码格式是QR Code，一维码格式为Code 128
-	2. 解码算法优化。使用GlobalHistogramBinarizer算法的效果要稍微比HybridBinarizer好一些，识别的速度更快
-	3. 减少解码数据，（1）裁剪无用区域，减少解码数据。（2）灰度处理
-	4. 串行请求处理帧改为并发处理帧（可选）
-	5. 降低bestReView的size，从而降低分辨率
-其中减少解码数据和降低分辨率是个人觉得最有效的方式
 
 # 自定义
 如果你不满意我的扫码界面，想自定义的话，我为各位看官准备了ZxingCallBack接口
