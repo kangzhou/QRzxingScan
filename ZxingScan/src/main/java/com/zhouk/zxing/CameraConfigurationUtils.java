@@ -342,7 +342,7 @@ public final class CameraConfigurationUtils {
     // If no exact match, use largest preview size. This was not a great idea on older devices because
     // of the additional computation needed. We're likely to get here on newer Android 4+ devices, where
     // the CPU is much more powerful.
-    if (!supportedPreviewSizes.isEmpty()) {
+    if (!supportedPreviewSizes.isEmpty()) {//获取排序后的PreviewSizes的最后一个，即为分别率最小的size
       Camera.Size largestPreview = supportedPreviewSizes.get(supportedPreviewSizes.size()-1);
       Point largestSize = new Point(largestPreview.width, largestPreview.height);
       Log.i(TAG, "Using largest suitable preview size: " + largestSize);

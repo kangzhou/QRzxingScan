@@ -269,7 +269,4 @@ public class CaptureImpl implements ResultCallBack {
         return (int) (pxValue / scale + 0.5f);
     }
 
-    public CaptureImpl setSurfaceView(SurfaceView preview_view) {
-        return this;
-    }
 }

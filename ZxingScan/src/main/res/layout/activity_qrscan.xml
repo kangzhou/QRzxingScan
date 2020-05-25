@@ -26,6 +26,7 @@
         android:textColor="#cccccc"
         android:textSize="14sp" />
 
+    <!--可用于显示scanResult的Bitmap-->
     <ImageView
         android:id="@+id/cropImage"
         android:layout_width="300dp"
